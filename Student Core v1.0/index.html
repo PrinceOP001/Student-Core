@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Core</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <style>
+        /* Index page */
+        .auth-page {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 30px;
+            background: var(--bg);
+        }
+
+        .auth-container {
+            width: min(900px, 100%);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--w);
+            border: 1px solid var(--b);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .auth-intro {
+            padding: 55px 45px;
+            background: var(--lp);
+        }
+
+        .auth-logo {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            color: var(--w);
+            background: var(--p);
+            font-weight: bold;
+        }
+
+        .auth-intro h1 {
+            font-size: 34px;
+        }
+
+        .auth-intro h1 span {
+            color: var(--p);
+        }
+
+        .auth-intro p {
+            max-width: 320px;
+            margin-top: 12px;
+            color: var(--g);
+            line-height: 1.6;
+        }
+
+        .auth-intro .tagline {
+            margin-top: 35px;
+            color: var(--p);
+            font-weight: bold;
+        }
+
+        .auth-box {
+            padding: 45px;
+        }
+
+        .auth-box h2 {
+            font-size: 24px;
+        }
+
+        .auth-box > p {
+            margin-top: 7px;
+            color: var(--g);
+            font-size: 13px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 5px;
+            margin: 25px 0;
+            padding: 4px;
+            border-radius: 8px;
+            background: var(--light-grey);
+        }
+
+        .auth-tabs label {
+            flex: 1;
+            padding: 9px;
+            border-radius: 6px;
+            color: var(--g);
+            text-align: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .auth-tabs input {
+            display: none;
+        }
+
+        #login:checked + label,
+        #signup:checked + label {
+            color: var(--p);
+            background: var(--w);
+            font-weight: bold;
+        }
+
+        .form {
+            display: none;
+        }
+
+        #login:checked ~ .login-form,
+        #signup:checked ~ .signup-form {
+            display: grid;
+            gap: 13px;
+        }
+
+        .form label {
+            color: var(--dark);
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .form input {
+            width: 100%;
+            margin-top: 6px;
+            padding: 11px 12px;
+            border: 1px solid var(--b);
+            border-radius: 7px;
+            outline: none;
+        }
+
+        .form input:focus {
+            border-color: var(--p);
+        }
+
+        .auth-button {
+            margin-top: 7px;
+            padding: 11px;
+            border: 0;
+            border-radius: 7px;
+            color: var(--w);
+            background: var(--p);
+            font-weight: bold;
+        }
+
+        .guest {
+            display: block;
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid var(--b);
+            color: var(--p);
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 700px) {
+            .auth-container {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-intro {
+                padding: 35px;
+            }
+
+            .auth-intro .tagline {
+                margin-top: 20px;
+            }
+
+            .auth-box {
+                padding: 35px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="auth-page">
+        <section class="auth-container">
+
+            <div class="auth-intro">
+                <div class="auth-logo">SC</div>
+                <h1>Student <span>Core</span></h1>
+                <p>
+                    Your personal academic companion to plan,
+                    track, organize and grow.
+                </p>
+                <p class="tagline">A more productive you, every day.</p>
+            </div>
+
+            <div class="auth-box">
+                <h2>Welcome Back</h2>
+                <p>Login to continue to Student Core.</p>
+
+                <div class="auth-tabs">
+                    <input type="radio" name="auth" id="login" checked>
+                    <label for="login">Login</label>
+
+                    <input type="radio" name="auth" id="signup">
+                    <label for="signup">Sign Up</label>
+
+                    <form class="form login-form" action="#" onsubmit="return false;">
+                        <label>
+                            Email
+                            <input type="email" placeholder="Enter your email">
+                        </label>
+
+                        <label>
+                            Password
+                            <input type="password" placeholder="Enter your password">
+                        </label>
+
+                        <button class="auth-button" type="submit">Login</button>
+                    </form>
+
+                    <form class="form signup-form" action="#" onsubmit="return false;">
+                        <label>
+                            Name
+                            <input type="text" placeholder="Enter your name">
+                        </label>
+
+                        <label>
+                            Email
+                            <input type="email" placeholder="Enter your email">
+                        </label>
+
+                        <label>
+                            Password
+                            <input type="password" placeholder="Create a password">
+                        </label>
+
+                        <button class="auth-button" type="submit">Create Account</button>
+                    </form>
+                </div>
+
+                <a class="guest" href="dashboard.html">
+                    Continue as Guest →
+                </a>
+            </div>
+
+        </section>
+    </main>
+</body>
+</html>

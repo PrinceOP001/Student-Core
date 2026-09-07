@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Core - Tasks</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+    <h1>Tasks</h1>
+    <p><a href="dashboard.html">← Dashboard</a></p>
+
+    <hr>
+
+    <h2>Add Task</h2>
+
+    <form id="taskForm">
+        <input id="taskTitle" type="text" placeholder="Task title" required>
+
+        <input id="taskSubject" type="text" placeholder="Subject">
+
+        <select id="taskPriority">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+        </select>
+
+        <input id="taskDeadline" type="date">
+
+        <button type="submit">Add Task</button>
+    </form>
+
+    <h2>Task List</h2>
+
+    <label>
+        Show:
+        <select id="filter" onchange="renderTasks()">
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+        </select>
+    </label>
+
+    <div id="taskList"></div>
+
+    <script>
+        const TASK_KEY = "studentCore_tasks";
+        let tasks = JSON.parse(localStorage.getItem(TASK_KEY)) || [];
+
+        function saveTasks() {
+            localStorage.setItem(TASK_KEY, JSON.stringify(tasks));
+        }
+
+        function addTask(event) {
+            event.preventDefault();
+
+            const task = {
+                id: Date.now(),
+                title: document.getElementById("taskTitle").value.trim(),
+                subject: document.getElementById("taskSubject").value.trim(),
+                priority: document.getElementById("taskPriority").value,
+                deadline: document.getElementById("taskDeadline").value,
+                completed: false
+            };
+
+            if (!task.title) return;
+
+            tasks.push(task);
+            saveTasks();
+
+            event.target.reset();
+            document.getElementById("taskPriority").value = "Medium";
+
+            renderTasks();
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(task => task.id === id);
+
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        function editTask(id) {
+            const task = tasks.find(task => task.id === id);
+            if (!task) return;
+
+            const title = prompt("Task title:", task.title);
+            if (title === null) return;
+
+            const subject = prompt("Subject:", task.subject);
+            if (subject === null) return;
+
+            const priority = prompt("Priority (Low / Medium / High):", task.priority);
+            if (priority === null) return;
+
+            const deadline = prompt("Deadline (YYYY-MM-DD):", task.deadline);
+            if (deadline === null) return;
+
+            task.title = title.trim() || task.title;
+            task.subject = subject.trim();
+            task.priority = ["Low", "Medium", "High"].includes(priority)
+                ? priority
+                : task.priority;
+            task.deadline = deadline;
+
+            saveTasks();
+            renderTasks();
+        }
+
+        function removeTask(id) {
+            if (!confirm("Remove this task?")) return;
+
+            tasks = tasks.filter(task => task.id !== id);
+            saveTasks();
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const list = document.getElementById("taskList");
+            const filter = document.getElementById("filter").value;
+
+            let visibleTasks = tasks;
+
+            if (filter === "pending") {
+                visibleTasks = tasks.filter(task => !task.completed);
+            }
+
+            if (filter === "completed") {
+                visibleTasks = tasks.filter(task => task.completed);
+            }
+
+            if (visibleTasks.length === 0) {
+                list.innerHTML = "<p>No tasks here.</p>";
+                return;
+            }
+
+            // Pending tasks first, then completed tasks.
+            visibleTasks = [...visibleTasks].sort((a, b) => {
+                if (a.completed !== b.completed) return a.completed - b.completed;
+                return (a.deadline || "9999-12-31").localeCompare(
+                    b.deadline || "9999-12-31"
+                );
+            });
+
+            list.innerHTML = visibleTasks.map(task => `
+                <article>
+                    <hr>
+
+                    <input
+                        type="checkbox"
+                        ${task.completed ? "checked" : ""}
+                        onchange="toggleTask(${task.id})"
+                    >
+
+                    <strong>${escapeHTML(task.title)}</strong>
+
+                    <p>
+                        Subject: ${escapeHTML(task.subject || "General")}
+                        <br>
+                        Priority: <strong>${task.priority}</strong>
+                        <br>
+                        Due: ${task.deadline || "No deadline"}
+                        <br>
+                        Status: ${task.completed ? "Completed" : "Pending"}
+                    </p>
+
+                    <button onclick="editTask(${task.id})">Edit</button>
+                    <button onclick="removeTask(${task.id})">Remove</button>
+                </article>
+            `).join("");
+        }
+
+        function escapeHTML(text) {
+            return String(text).replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            }[char]));
+        }
+
+        document.getElementById("taskForm").addEventListener("submit", addTask);
+
+        renderTasks();
+    </script>
+</body>
+</html>

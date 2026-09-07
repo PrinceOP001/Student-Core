@@ -1,0 +1,220 @@
+/* ==========================================================================
+   Student Core — Components
+   Shared building blocks reused across every page: typography, forms,
+   inputs, buttons and the "article" list cards each page renders via JS.
+   Buttons are told apart purely by attribute (type="submit" vs the
+   onclick handler name) since the HTML has no classes to hook into.
+   ========================================================================== */
+
+/* ---------------- Typography ---------------- */
+
+h1 {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+h2 {
+    font-size: 17px;
+    font-weight: 800;
+    margin: 0 0 16px;
+}
+
+h3 {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: var(--dark);
+}
+
+p {
+    color: var(--g);
+    font-size: 14px;
+}
+
+p strong,
+li strong {
+    color: var(--dark);
+}
+
+/* Back-to-dashboard link. Specificity note: this loses on purpose to the
+   sidebar's own `aside nav a:first-child` rule in layout.css, so the
+   sidebar's "Dashboard" entry keeps its own look. */
+a[href="dashboard.html"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+/* ---------------- Labels (standalone or inside forms) ---------------- */
+
+label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--dark);
+    margin: 0 10px 10px 0;
+}
+
+/* ---------------- Inputs / selects ---------------- */
+
+input,
+select,
+textarea {
+    font: inherit;
+    font-size: 14px;
+    padding: 10px 14px;
+    border: 1px solid var(--b);
+    border-radius: var(--radius-sm);
+    background: var(--w);
+    color: var(--dark);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--p);
+    box-shadow: 0 0 0 3px rgba(108, 79, 224, 0.14);
+}
+
+input[type="file"] {
+    padding: 8px 10px;
+    font-size: 13px;
+    background: var(--light-grey);
+    border-style: dashed;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--p);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="number"] {
+    min-width: 0;
+}
+
+/* ---------------- Buttons ---------------- */
+
+button {
+    font: inherit;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--b);
+    background: var(--light-grey);
+    color: var(--dark);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+}
+
+button:hover {
+    background: var(--b);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+/* Primary — every "Add / Save / Create / Upload" submit button */
+button[type="submit"] {
+    background: var(--p);
+    border-color: var(--p);
+    color: var(--w);
+}
+button[type="submit"]:hover {
+    background: var(--p-dark);
+    border-color: var(--p-dark);
+}
+
+/* Ghost — Edit / Open actions */
+button[onclick^="edit"],
+button[onclick^="open"],
+button[onclick^="toggle"],
+button[onclick^="changeStatus"],
+button[onclick^="mark"] {
+    background: var(--w);
+    border-color: var(--b);
+    color: var(--p);
+}
+button[onclick^="edit"]:hover,
+button[onclick^="open"]:hover,
+button[onclick^="toggle"]:hover,
+button[onclick^="changeStatus"]:hover,
+button[onclick^="mark"]:hover {
+    background: var(--lp);
+}
+
+/* Danger — anything destructive */
+button[onclick^="remove"],
+button[onclick^="clearData"] {
+    background: var(--danger-bg);
+    border-color: var(--danger-bg);
+    color: var(--danger);
+}
+button[onclick^="remove"]:hover,
+button[onclick^="clearData"]:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: var(--w);
+}
+
+/* ---------------- Generic form card ---------------- */
+
+form {
+    background: var(--w);
+    border: 1px solid var(--b);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+form > input,
+form > select {
+    flex: 1 1 170px;
+}
+
+form > button {
+    flex: 0 0 auto;
+}
+
+/* ---------------- List cards (rendered via innerHTML as <article>) ---------------- */
+
+article {
+    background: var(--w);
+    border: 1px solid var(--b);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+}
+
+/* Every generated article opens with its own <hr> as a separator — once
+   it's a bordered card on its own, that inner rule is redundant. */
+article > hr:first-child {
+    display: none;
+}
+
+article p {
+    margin-bottom: 12px;
+}
+
+article button {
+    margin: 4px 8px 0 0;
+}

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Core - Settings</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+    <h1>Settings & Profile</h1>
+    <p><a href="dashboard.html">← Dashboard</a></p>
+
+    <hr>
+
+    <h2>Profile</h2>
+
+    <form id="profileForm">
+        <label>
+            Name:
+            <input id="profileName" type="text" required>
+        </label>
+
+        <br><br>
+
+        <label>
+            College:
+            <input id="profileCollege" type="text">
+        </label>
+
+        <br><br>
+
+        <label>
+            Course:
+            <input id="profileCourse" type="text">
+        </label>
+
+        <br><br>
+
+        <label>
+            Semester:
+            <input id="profileSemester" type="number" min="1" max="12">
+        </label>
+
+        <br><br>
+
+        <button type="submit">Save Profile</button>
+    </form>
+
+    <hr>
+
+    <h2>Appearance</h2>
+
+    <label>
+        Theme:
+        <select id="theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+        </select>
+    </label>
+
+    <button onclick="saveTheme()">Save Theme</button>
+
+    <hr>
+
+    <h2>Data</h2>
+
+    <button onclick="exportData()">Export Data</button>
+
+    <input
+        id="importFile"
+        type="file"
+        accept=".json"
+        onchange="importData(event)"
+    >
+
+    <br><br>
+
+    <button onclick="clearData()">Clear All Student Core Data</button>
+
+    <hr>
+
+    <h2>Account</h2>
+
+    <button onclick="login()">Login</button>
+    <button onclick="logout()">Log Out</button>
+
+    <p id="message"></p>
+
+    <hr>
+
+    <p>Student Core v1.0</p>
+
+    <script>
+        const PROFILE_KEY = "studentCore_profile";
+        const THEME_KEY = "studentCore_theme";
+
+        const defaultProfile = {
+            name: "Prince",
+            college: "",
+            course: "Computer Science",
+            semester: 7
+        };
+
+        function loadProfile() {
+            const profile =
+                JSON.parse(localStorage.getItem(PROFILE_KEY)) ||
+                defaultProfile;
+
+            document.getElementById("profileName").value = profile.name || "";
+            document.getElementById("profileCollege").value = profile.college || "";
+            document.getElementById("profileCourse").value = profile.course || "";
+            document.getElementById("profileSemester").value =
+                profile.semester || "";
+        }
+
+        document.getElementById("profileForm").addEventListener(
+            "submit",
+            function (event) {
+                event.preventDefault();
+
+                const profile = {
+                    name: document.getElementById("profileName").value.trim(),
+                    college: document.getElementById("profileCollege").value.trim(),
+                    course: document.getElementById("profileCourse").value.trim(),
+                    semester: Number(
+                        document.getElementById("profileSemester").value
+                    )
+                };
+
+                localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+
+                document.getElementById("message").textContent =
+                    "Profile saved.";
+            }
+        );
+
+        function loadTheme() {
+            document.getElementById("theme").value =
+                localStorage.getItem(THEME_KEY) || "system";
+        }
+
+        function saveTheme() {
+            const theme = document.getElementById("theme").value;
+            localStorage.setItem(THEME_KEY, theme);
+
+            document.getElementById("message").textContent =
+                "Theme preference saved.";
+        }
+
+        function exportData() {
+            const data = {
+                version: "1.0",
+                exportedAt: new Date().toISOString(),
+                localStorage: { ...localStorage }
+            };
+
+            const file = new Blob(
+                [JSON.stringify(data, null, 2)],
+                { type: "application/json" }
+            );
+
+            const url = URL.createObjectURL(file);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = "student-core-backup.json";
+            link.click();
+
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                try {
+                    const data = JSON.parse(reader.result);
+
+                    if (!data.localStorage) {
+                        throw new Error("Invalid backup file.");
+                    }
+
+                    Object.entries(data.localStorage).forEach(([key, value]) => {
+                        localStorage.setItem(key, value);
+                    });
+
+                    alert("Data imported successfully.");
+                    location.reload();
+
+                } catch (error) {
+                    alert("Invalid Student Core backup file.");
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        function clearData() {
+            const confirmed = confirm(
+                "This will delete all Student Core local data. Continue?"
+            );
+
+            if (!confirmed) return;
+
+            localStorage.clear();
+            alert("All local Student Core data has been cleared.");
+            location.reload();
+        }
+
+        function login() {
+            document.getElementById("message").textContent =
+                "Login is not connected yet.";
+        }
+
+        function logout() {
+            const confirmed = confirm("Log out of Student Core?");
+
+            if (confirmed) {
+                window.location.href = "index.html";
+            }
+        }
+
+        loadProfile();
+        loadTheme();
+    </script>
+</body>
+</html>
