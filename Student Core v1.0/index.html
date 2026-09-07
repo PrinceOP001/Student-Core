@@ -1,251 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Core</title>
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/pages.css">
-
     <style>
-        /* Index page */
-        .auth-page {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
             min-height: 100vh;
-            display: grid;
-            place-items: center;
-            padding: 30px;
-            background: var(--bg);
-        }
-
-        .auth-container {
-            width: min(900px, 100%);
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            background: var(--w);
-            border: 1px solid var(--b);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .auth-intro {
-            padding: 55px 45px;
-            background: var(--lp);
-        }
-
-        .auth-logo {
-            width: 48px;
-            height: 48px;
-            display: grid;
-            place-items: center;
-            margin-bottom: 25px;
-            border-radius: 12px;
-            color: var(--w);
-            background: var(--p);
-            font-weight: bold;
-        }
-
-        .auth-intro h1 {
-            font-size: 34px;
-        }
-
-        .auth-intro h1 span {
-            color: var(--p);
-        }
-
-        .auth-intro p {
-            max-width: 320px;
-            margin-top: 12px;
-            color: var(--g);
-            line-height: 1.6;
-        }
-
-        .auth-intro .tagline {
-            margin-top: 35px;
-            color: var(--p);
-            font-weight: bold;
-        }
-
-        .auth-box {
-            padding: 45px;
-        }
-
-        .auth-box h2 {
-            font-size: 24px;
-        }
-
-        .auth-box > p {
-            margin-top: 7px;
-            color: var(--g);
-            font-size: 13px;
-        }
-
-        .auth-tabs {
             display: flex;
-            gap: 5px;
-            margin: 25px 0;
-            padding: 4px;
-            border-radius: 8px;
-            background: var(--light-grey);
+            justify-content: center;
+            align-items: center;
+            background: #f7f5fb;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #17151b;
         }
 
-        .auth-tabs label {
+        /* Main Box */
+        .login-container {
+            width: 900px;
+            min-height: 500px;
+            display: flex;
+            background: white;
+            border: 1px solid #e5e0ed;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Left Side */
+        .welcome-section {
+            width: 50%;
+            padding: 55px;
+            background: #eee9fc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .logo-icon {
+            width: 52px;
+            height: 52px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            background: #6d4de8;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .logo-text span {
+            color: #6d4de8;
+        }
+
+        .welcome-section h2 {
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        .welcome-section p {
+            max-width: 330px;
+            color: #6f6a78;
+            line-height: 1.7;
+        }
+
+        /* Right Side */
+        .form-section {
+            width: 50%;
+            padding: 55px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-section h1 {
+            margin-bottom: 8px;
+            font-size: 30px;
+        }
+
+        .subtitle {
+            margin-bottom: 25px;
+            color: #6f6a78;
+            line-height: 1.5;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #e5e0ed;
+        }
+
+        .tab {
             flex: 1;
-            padding: 9px;
-            border-radius: 6px;
-            color: var(--g);
-            text-align: center;
-            font-size: 12px;
+            padding: 12px;
+            border: none;
+            background: none;
+            color: #6f6a78;
+            font-weight: 600;
             cursor: pointer;
         }
 
-        .auth-tabs input {
-            display: none;
+        .tab.active {
+            color: #6d4de8;
+            border-bottom: 2px solid #6d4de8;
         }
 
-        #login:checked + label,
-        #signup:checked + label {
-            color: var(--p);
-            background: var(--w);
-            font-weight: bold;
-        }
-
+        /* Forms */
         .form {
             display: none;
         }
 
-        #login:checked ~ .login-form,
-        #signup:checked ~ .signup-form {
-            display: grid;
-            gap: 13px;
+        .form.active {
+            display: block;
         }
 
-        .form label {
-            color: var(--dark);
-            font-size: 11px;
-            font-weight: bold;
+        .input-group {
+            margin-bottom: 16px;
         }
 
-        .form input {
+        .input-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .input-group input {
             width: 100%;
-            margin-top: 6px;
-            padding: 11px 12px;
-            border: 1px solid var(--b);
-            border-radius: 7px;
+            padding: 12px;
+            border: 1px solid #ddd8e6;
+            border-radius: 8px;
             outline: none;
         }
 
-        .form input:focus {
-            border-color: var(--p);
+        .input-group input:focus {
+            border-color: #6d4de8;
         }
 
-        .auth-button {
-            margin-top: 7px;
-            padding: 11px;
-            border: 0;
-            border-radius: 7px;
-            color: var(--w);
-            background: var(--p);
-            font-weight: bold;
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #6d4de8;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        .guest {
-            display: block;
-            margin-top: 18px;
-            padding-top: 18px;
-            border-top: 1px solid var(--b);
-            color: var(--p);
+        .btn:hover {
+            background: #5938ce;
+        }
+
+        /* Guest */
+        .guest-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e0ed;
             text-align: center;
-            font-size: 12px;
-            font-weight: bold;
         }
 
-        @media (max-width: 700px) {
-            .auth-container {
-                grid-template-columns: 1fr;
+        .guest-section p {
+            margin-bottom: 12px;
+            color: #6f6a78;
+            font-size: 14px;
+        }
+
+        .guest-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #6d4de8;
+            border-radius: 8px;
+            background: white;
+            color: #6d4de8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .guest-btn:hover {
+            background: #eee9fc;
+        }
+
+        /* Mobile */
+        @media (max-width: 800px) {
+            .login-container {
+                width: 95%;
+                flex-direction: column;
             }
 
-            .auth-intro {
+            .welcome-section,
+            .form-section {
+                width: 100%;
+            }
+
+            .welcome-section {
                 padding: 35px;
             }
 
-            .auth-intro .tagline {
-                margin-top: 20px;
+            .form-section {
+                padding: 35px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .logo-text {
+                font-size: 28px;
             }
 
-            .auth-box {
-                padding: 35px;
+            .welcome-section h2 {
+                font-size: 24px;
+            }
+
+            .form-section h1 {
+                font-size: 26px;
             }
         }
     </style>
 </head>
 
 <body>
-    <main class="auth-page">
-        <section class="auth-container">
+    <main class="login-container">
+        <!-- LEFT SIDE -->
+        <section class="welcome-section">
+            <div class="logo">
+                <div class="logo-icon">
+                    SC
+                </div>
+                <div class="logo-text">
+                    Student <span>Core</span>
+                </div>
+            </div>
+            <h2>Your Academic Companion</h2>
+            <p>
+                Plan, track, organize and manage your academic life
+                in one simple place.
+            </p>
+        </section>
 
-            <div class="auth-intro">
-                <div class="auth-logo">SC</div>
-                <h1>Student <span>Core</span></h1>
-                <p>
-                    Your personal academic companion to plan,
-                    track, organize and grow.
-                </p>
-                <p class="tagline">A more productive you, every day.</p>
+        <!-- RIGHT SIDE -->
+        <section class="form-section">
+            <h1 id="form-title">
+                Welcome Back
+            </h1>
+            <p class="subtitle">
+                Login to continue to Student Core.
+            </p>
+
+            <!-- TABS -->
+            <div class="tabs">
+                <button class="tab active" id="login-tab" type="button" onclick="showLogin()">
+                    Login
+                </button>
+                <button class="tab" id="signup-tab" type="button" onclick="showSignup()">
+                    Sign Up
+                </button>
             </div>
 
-            <div class="auth-box">
-                <h2>Welcome Back</h2>
-                <p>Login to continue to Student Core.</p>
-
-                <div class="auth-tabs">
-                    <input type="radio" name="auth" id="login" checked>
-                    <label for="login">Login</label>
-
-                    <input type="radio" name="auth" id="signup">
-                    <label for="signup">Sign Up</label>
-
-                    <form class="form login-form" action="#" onsubmit="return false;">
-                        <label>
-                            Email
-                            <input type="email" placeholder="Enter your email">
-                        </label>
-
-                        <label>
-                            Password
-                            <input type="password" placeholder="Enter your password">
-                        </label>
-
-                        <button class="auth-button" type="submit">Login</button>
-                    </form>
-
-                    <form class="form signup-form" action="#" onsubmit="return false;">
-                        <label>
-                            Name
-                            <input type="text" placeholder="Enter your name">
-                        </label>
-
-                        <label>
-                            Email
-                            <input type="email" placeholder="Enter your email">
-                        </label>
-
-                        <label>
-                            Password
-                            <input type="password" placeholder="Create a password">
-                        </label>
-
-                        <button class="auth-button" type="submit">Create Account</button>
-                    </form>
+            <!-- LOGIN FORM -->
+            <form class="form active" id="login-form" onsubmit="return false;">
+                <div class="input-group">
+                    <label for="login-email">
+                        Email
+                    </label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
                 </div>
+                <div class="input-group">
+                    <label for="login-password">
+                        Password
+                    </label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                <button class="btn" type="submit">
+                    Login
+                </button>
+            </form>
 
-                <a class="guest" href="dashboard.html">
-                    Continue as Guest →
+            <!-- SIGN UP FORM -->
+            <form class="form" id="signup-form" onsubmit="return false;">
+                <div class="input-group">
+                    <label for="signup-name">
+                        Name
+                    </label>
+                    <input type="text" id="signup-name" placeholder="Enter your name">
+                </div>
+                <div class="input-group">
+                    <label for="signup-email">
+                        Email
+                    </label>
+                    <input type="email" id="signup-email" placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">
+                        Password
+                    </label>
+                    <input type="password" id="signup-password" placeholder="Create a password">
+                </div>
+                <button class="btn" type="submit">
+                    Create Account
+                </button>
+            </form>
+
+            <!-- GUEST -->
+            <div class="guest-section">
+                <p>
+                    Don't want to create an account?
+                </p>
+                <a href="dashboard.html" class="guest-btn">
+                    Continue as Guest
                 </a>
             </div>
-
         </section>
     </main>
+
+    <script>
+        function showLogin() {
+            document.getElementById("login-form")
+                .classList.add("active");
+            document.getElementById("signup-form")
+                .classList.remove("active");
+            document.getElementById("login-tab")
+                .classList.add("active");
+            document.getElementById("signup-tab")
+                .classList.remove("active");
+            document.getElementById("form-title")
+                .textContent = "Welcome Back";
+            document.querySelector(".subtitle")
+                .textContent = "Login to continue to Student Core.";
+        }
+
+        function showSignup() {
+            document.getElementById("signup-form")
+                .classList.add("active");
+            document.getElementById("login-form")
+                .classList.remove("active");
+            document.getElementById("signup-tab")
+                .classList.add("active");
+            document.getElementById("login-tab")
+                .classList.remove("active");
+            document.getElementById("form-title")
+                .textContent = "Create Account";
+            document.querySelector(".subtitle").textContent = "Create your Student Core account.";
+        }
+    </script>
 </body>
 </html>
