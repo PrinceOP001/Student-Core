@@ -1,0 +1,41 @@
+/* ==========================================================================
+   Student Core — Variables
+   index.html already uses --bg, --w, --p, --g, --b, --lp, --dark and
+   --light-grey in its own <style> block, so those names are kept exactly
+   as-is here. Everything else needed by the other pages is added below.
+   ========================================================================== */
+
+:root {
+    /* ---- Core palette (white + purple) ---- */
+    --bg: #F5F3FB;          /* page background */
+    --w: #FFFFFF;           /* surfaces / cards */
+    --p: #6C4FE0;           /* primary purple */
+    --p-dark: #5539C4;      /* primary, hover/active */
+    --lp: #EFEAFB;          /* light purple panel/tint */
+    --g: #6B6B80;           /* secondary / grey text */
+    --b: #E6E2F3;           /* borders */
+    --dark: #1E1B2E;        /* headings / primary text */
+    --light-grey: #F1EFF8;  /* tab-switcher track, subtle fills */
+
+    /* ---- Status colors ---- */
+    --danger: #E0505C;
+    --danger-bg: #FCEAEC;
+    --success: #1FA35C;
+    --success-bg: #E9F8EF;
+    --warning: #DB9A2C;
+    --warning-bg: #FCF2E1;
+
+    /* ---- Shape & elevation ---- */
+    --radius: 14px;
+    --radius-sm: 8px;
+    --radius-pill: 999px;
+    --shadow: 0 4px 18px rgba(30, 20, 70, 0.06);
+    --shadow-md: 0 10px 30px rgba(30, 20, 70, 0.09);
+
+    /* ---- Layout ---- */
+    --sidebar-w: 226px;
+    --content-max: 880px;
+
+    /* ---- Type ---- */
+    --font: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}

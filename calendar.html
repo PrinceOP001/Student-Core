@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Core - Calendar</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+    <h1>Calendar</h1>
+    <p><a href="dashboard.html">← Dashboard</a></p>
+
+    <hr>
+
+    <h2>Add Event</h2>
+
+    <form id="eventForm">
+        <input id="eventTitle" type="text" placeholder="Event title" required>
+        <input id="eventDate" type="date" required>
+        <input id="eventTime" type="time">
+
+        <select id="eventType">
+            <option value="Important">Important</option>
+            <option value="Exam">Exam</option>
+            <option value="Assignment">Assignment</option>
+            <option value="Viva">Viva</option>
+            <option value="Event">Event</option>
+            <option value="Reminder">Reminder</option>
+        </select>
+
+        <input id="eventNote" type="text" placeholder="Note (optional)">
+
+        <button type="submit">Add Event</button>
+    </form>
+
+    <hr>
+
+    <h2>Upcoming Events</h2>
+    <div id="eventList"></div>
+
+    <script>
+        const CALENDAR_KEY = "studentCore_calendar";
+        let events = JSON.parse(localStorage.getItem(CALENDAR_KEY)) || [];
+
+        function saveEvents() {
+            localStorage.setItem(CALENDAR_KEY, JSON.stringify(events));
+        }
+
+        function addEvent(event) {
+            event.preventDefault();
+
+            const newEvent = {
+                id: Date.now(),
+                title: document.getElementById("eventTitle").value.trim(),
+                date: document.getElementById("eventDate").value,
+                time: document.getElementById("eventTime").value,
+                type: document.getElementById("eventType").value,
+                note: document.getElementById("eventNote").value.trim()
+            };
+
+            if (!newEvent.title || !newEvent.date) return;
+
+            events.push(newEvent);
+            saveEvents();
+
+            event.target.reset();
+            renderEvents();
+        }
+
+        function editEvent(id) {
+            const event = events.find(item => item.id === id);
+            if (!event) return;
+
+            const title = prompt("Event title:", event.title);
+            if (title === null) return;
+
+            const date = prompt("Date (YYYY-MM-DD):", event.date);
+            if (date === null) return;
+
+            const time = prompt("Time (HH:MM, optional):", event.time);
+            if (time === null) return;
+
+            const type = prompt(
+                "Type (Important / Exam / Assignment / Viva / Event / Reminder):",
+                event.type
+            );
+            if (type === null) return;
+
+            const note = prompt("Note:", event.note);
+            if (note === null) return;
+
+            event.title = title.trim() || event.title;
+            event.date = date;
+            event.time = time;
+            event.type = type.trim() || event.type;
+            event.note = note.trim();
+
+            saveEvents();
+            renderEvents();
+        }
+
+        function removeEvent(id) {
+            if (!confirm("Remove this event?")) return;
+
+            events = events.filter(event => event.id !== id);
+            saveEvents();
+            renderEvents();
+        }
+
+        function renderEvents() {
+            const list = document.getElementById("eventList");
+
+            const sorted = [...events].sort((a, b) => {
+                const first = `${a.date} ${a.time || "23:59"}`;
+                const second = `${b.date} ${b.time || "23:59"}`;
+                return first.localeCompare(second);
+            });
+
+            if (sorted.length === 0) {
+                list.innerHTML = "<p>No events added yet.</p>";
+                return;
+            }
+
+            list.innerHTML = sorted.map(event => {
+                const eventDate = new Date(event.date + "T00:00:00");
+                const formattedDate = eventDate.toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                });
+
+                return `
+                    <article>
+                        <hr>
+                        <h3>${escapeHTML(event.title)}</h3>
+                        <p>
+                            Date: ${formattedDate}
+                            ${event.time ? `<br>Time: ${event.time}` : ""}
+                            <br>Type: ${escapeHTML(event.type)}
+                            ${event.note ? `<br>Note: ${escapeHTML(event.note)}` : ""}
+                        </p>
+                        <button onclick="editEvent(${event.id})">Edit</button>
+                        <button onclick="removeEvent(${event.id})">Remove</button>
+                    </article>
+                `;
+            }).join("");
+        }
+
+        function escapeHTML(text) {
+            return String(text).replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            }[char]));
+        }
+
+        document.getElementById("eventForm").addEventListener("submit", addEvent);
+        renderEvents();
+    </script>
+</body>
+</html>

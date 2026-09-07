@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Core - Documents</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+    <h1>Documents</h1>
+    <p><a href="dashboard.html">← Dashboard</a></p>
+
+    <hr>
+
+    <h2>Add Document</h2>
+
+    <form id="documentForm">
+        <input id="documentTitle" type="text" placeholder="Document name" required>
+
+        <select id="documentCategory">
+            <option value="Personal">Personal</option>
+            <option value="College">College</option>
+            <option value="Results">Results</option>
+            <option value="Certificates">Certificates</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <input
+            id="documentFile"
+            type="file"
+            accept=".pdf,.doc,.docx,.txt,image/*"
+            required
+        >
+
+        <button type="submit">Upload Document</button>
+    </form>
+
+    <p>
+        Documents are stored locally in this browser using IndexedDB.
+    </p>
+
+    <hr>
+
+    <h2>Saved Documents</h2>
+    <div id="documentList"></div>
+
+    <script>
+        const DB_NAME = "StudentCoreDocuments";
+        const STORE_NAME = "documents";
+        let db;
+
+        function openDatabase() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+
+                request.onupgradeneeded = function () {
+                    const database = request.result;
+
+                    if (!database.objectStoreNames.contains(STORE_NAME)) {
+                        database.createObjectStore(STORE_NAME, {
+                            keyPath: "id",
+                            autoIncrement: true
+                        });
+                    }
+                };
+
+                request.onsuccess = function () {
+                    db = request.result;
+                    resolve();
+                };
+
+                request.onerror = function () {
+                    reject(request.error);
+                };
+            });
+        }
+
+        function getDocuments() {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(STORE_NAME, "readonly");
+                const request = transaction.objectStore(STORE_NAME).getAll();
+
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function addDocument(documentData) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(STORE_NAME, "readwrite");
+                const request = transaction.objectStore(STORE_NAME).add(documentData);
+
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function deleteDocument(id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(STORE_NAME, "readwrite");
+                const request = transaction.objectStore(STORE_NAME).delete(id);
+
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function renderDocuments() {
+            const list = document.getElementById("documentList");
+            const documents = await getDocuments();
+
+            if (documents.length === 0) {
+                list.innerHTML = "<p>No documents uploaded yet.</p>";
+                return;
+            }
+
+            list.innerHTML = documents.map(document => `
+                <article>
+                    <hr>
+                    <h3>${escapeHTML(document.title)}</h3>
+                    <p>
+                        Category: ${escapeHTML(document.category)}
+                        <br>
+                        File: ${escapeHTML(document.fileName)}
+                    </p>
+
+                    <button onclick="openDocument(${document.id})">Open</button>
+                    <button onclick="removeDocument(${document.id})">Remove</button>
+                </article>
+            `).join("");
+        }
+
+        async function openDocument(id) {
+            const documents = await getDocuments();
+            const documentData = documents.find(document => document.id === id);
+
+            if (!documentData) return;
+
+            const url = URL.createObjectURL(documentData.file);
+            window.open(url, "_blank");
+
+            setTimeout(() => URL.revokeObjectURL(url), 60000);
+        }
+
+        async function removeDocument(id) {
+            if (!confirm("Remove this document?")) return;
+
+            await deleteDocument(id);
+            renderDocuments();
+        }
+
+        document.getElementById("documentForm").addEventListener(
+            "submit",
+            async function (event) {
+                event.preventDefault();
+
+                const file = document.getElementById("documentFile").files[0];
+
+                if (!file) {
+                    alert("Please select a file.");
+                    return;
+                }
+
+                await addDocument({
+                    title: document.getElementById("documentTitle").value.trim(),
+                    category: document.getElementById("documentCategory").value,
+                    fileName: file.name,
+                    file: file,
+                    createdAt: new Date().toISOString()
+                });
+
+                this.reset();
+                renderDocuments();
+            }
+        );
+
+        function escapeHTML(text) {
+            return String(text).replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            }[char]));
+        }
+
+        openDatabase()
+            .then(renderDocuments)
+            .catch(error => {
+                console.error(error);
+                document.getElementById("documentList").innerHTML =
+                    "<p>Could not open local document storage.</p>";
+            });
+    </script>
+</body>
+</html>

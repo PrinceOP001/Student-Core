@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Core</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f7f5fb;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #17151b;
+        }
+
+        /* Main Box */
+        .login-container {
+            width: 900px;
+            min-height: 500px;
+            display: flex;
+            background: white;
+            border: 1px solid #e5e0ed;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Left Side */
+        .welcome-section {
+            width: 50%;
+            padding: 55px;
+            background: #eee9fc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .logo-icon {
+            width: 52px;
+            height: 52px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            background: #6d4de8;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .logo-text span {
+            color: #6d4de8;
+        }
+
+        .welcome-section h2 {
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        .welcome-section p {
+            max-width: 330px;
+            color: #6f6a78;
+            line-height: 1.7;
+        }
+
+        /* Right Side */
+        .form-section {
+            width: 50%;
+            padding: 55px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-section h1 {
+            margin-bottom: 8px;
+            font-size: 30px;
+        }
+
+        .subtitle {
+            margin-bottom: 25px;
+            color: #6f6a78;
+            line-height: 1.5;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #e5e0ed;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            color: #6f6a78;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            color: #6d4de8;
+            border-bottom: 2px solid #6d4de8;
+        }
+
+        /* Forms */
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd8e6;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #6d4de8;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #6d4de8;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #5938ce;
+        }
+
+        /* Guest */
+        .guest-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e0ed;
+            text-align: center;
+        }
+
+        .guest-section p {
+            margin-bottom: 12px;
+            color: #6f6a78;
+            font-size: 14px;
+        }
+
+        .guest-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #6d4de8;
+            border-radius: 8px;
+            background: white;
+            color: #6d4de8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .guest-btn:hover {
+            background: #eee9fc;
+        }
+
+        /* Mobile */
+        @media (max-width: 800px) {
+            .login-container {
+                width: 95%;
+                flex-direction: column;
+            }
+
+            .welcome-section,
+            .form-section {
+                width: 100%;
+            }
+
+            .welcome-section {
+                padding: 35px;
+            }
+
+            .form-section {
+                padding: 35px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .logo-text {
+                font-size: 28px;
+            }
+
+            .welcome-section h2 {
+                font-size: 24px;
+            }
+
+            .form-section h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="login-container">
+        <!-- LEFT SIDE -->
+        <section class="welcome-section">
+            <div class="logo">
+                <div class="logo-icon">
+                    SC
+                </div>
+                <div class="logo-text">
+                    Student <span>Core</span>
+                </div>
+            </div>
+            <h2>Your Academic Companion</h2>
+            <p>
+                Plan, track, organize and manage your academic life
+                in one simple place.
+            </p>
+        </section>
+
+        <!-- RIGHT SIDE -->
+        <section class="form-section">
+            <h1 id="form-title">
+                Welcome Back
+            </h1>
+            <p class="subtitle">
+                Login to continue to Student Core.
+            </p>
+
+            <!-- TABS -->
+            <div class="tabs">
+                <button class="tab active" id="login-tab" type="button" onclick="showLogin()">
+                    Login
+                </button>
+                <button class="tab" id="signup-tab" type="button" onclick="showSignup()">
+                    Sign Up
+                </button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form class="form active" id="login-form" onsubmit="return false;">
+                <div class="input-group">
+                    <label for="login-email">
+                        Email
+                    </label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="login-password">
+                        Password
+                    </label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                <button class="btn" type="submit">
+                    Login
+                </button>
+            </form>
+
+            <!-- SIGN UP FORM -->
+            <form class="form" id="signup-form" onsubmit="return false;">
+                <div class="input-group">
+                    <label for="signup-name">
+                        Name
+                    </label>
+                    <input type="text" id="signup-name" placeholder="Enter your name">
+                </div>
+                <div class="input-group">
+                    <label for="signup-email">
+                        Email
+                    </label>
+                    <input type="email" id="signup-email" placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">
+                        Password
+                    </label>
+                    <input type="password" id="signup-password" placeholder="Create a password">
+                </div>
+                <button class="btn" type="submit">
+                    Create Account
+                </button>
+            </form>
+
+            <!-- GUEST -->
+            <div class="guest-section">
+                <p>
+                    Don't want to create an account?
+                </p>
+                <a href="dashboard.html" class="guest-btn">
+                    Continue as Guest
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function showLogin() {
+            document.getElementById("login-form")
+                .classList.add("active");
+            document.getElementById("signup-form")
+                .classList.remove("active");
+            document.getElementById("login-tab")
+                .classList.add("active");
+            document.getElementById("signup-tab")
+                .classList.remove("active");
+            document.getElementById("form-title")
+                .textContent = "Welcome Back";
+            document.querySelector(".subtitle")
+                .textContent = "Login to continue to Student Core.";
+        }
+
+        function showSignup() {
+            document.getElementById("signup-form")
+                .classList.add("active");
+            document.getElementById("login-form")
+                .classList.remove("active");
+            document.getElementById("signup-tab")
+                .classList.add("active");
+            document.getElementById("login-tab")
+                .classList.remove("active");
+            document.getElementById("form-title")
+                .textContent = "Create Account";
+            document.querySelector(".subtitle").textContent = "Create your Student Core account.";
+        }
+    </script>
+</body>
+</html>

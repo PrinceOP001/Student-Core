@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Core - Videos</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+    <h1>Videos</h1>
+    <p><a href="dashboard.html">← Dashboard</a></p>
+
+    <hr>
+
+    <h2>Add YouTube Video</h2>
+
+    <form id="videoForm">
+        <input id="videoTitle" type="text" placeholder="Video title" required>
+        <input id="videoSubject" type="text" placeholder="Subject">
+        <input id="videoURL" type="url" placeholder="YouTube URL" required>
+
+        <select id="videoStatus">
+            <option value="Watch Later">Watch Later</option>
+            <option value="Saved">Saved</option>
+            <option value="Watched">Watched</option>
+        </select>
+
+        <button type="submit">Save Video</button>
+    </form>
+
+    <hr>
+
+    <h2>Saved Videos</h2>
+
+    <label>
+        Show:
+        <select id="videoFilter" onchange="renderVideos()">
+            <option value="all">All</option>
+            <option value="Watch Later">Watch Later</option>
+            <option value="Saved">Saved</option>
+            <option value="Watched">Watched</option>
+        </select>
+    </label>
+
+    <div id="videoList"></div>
+
+    <script>
+        const VIDEO_KEY = "studentCore_videos";
+        let videos = JSON.parse(localStorage.getItem(VIDEO_KEY)) || [];
+
+        function saveVideos() {
+            localStorage.setItem(VIDEO_KEY, JSON.stringify(videos));
+        }
+
+        function getYouTubeId(url) {
+            try {
+                const parsed = new URL(url);
+
+                if (parsed.hostname.includes("youtu.be")) {
+                    return parsed.pathname.slice(1);
+                }
+
+                if (parsed.hostname.includes("youtube.com")) {
+                    return parsed.searchParams.get("v");
+                }
+
+                return null;
+            } catch {
+                return null;
+            }
+        }
+
+        function addVideo(event) {
+            event.preventDefault();
+
+            const url = document.getElementById("videoURL").value.trim();
+            const videoId = getYouTubeId(url);
+
+            if (!videoId) {
+                alert("Please enter a valid YouTube video URL.");
+                return;
+            }
+
+            const video = {
+                id: Date.now(),
+                title: document.getElementById("videoTitle").value.trim(),
+                subject: document.getElementById("videoSubject").value.trim(),
+                url: url,
+                videoId: videoId,
+                status: document.getElementById("videoStatus").value
+            };
+
+            videos.push(video);
+            saveVideos();
+
+            event.target.reset();
+            renderVideos();
+        }
+
+        function changeStatus(id) {
+            const video = videos.find(video => video.id === id);
+            if (!video) return;
+
+            const status = prompt(
+                "Status (Watch Later / Saved / Watched):",
+                video.status
+            );
+
+            if (status === null) return;
+
+            if (!["Watch Later", "Saved", "Watched"].includes(status)) {
+                alert("Invalid status.");
+                return;
+            }
+
+            video.status = status;
+            saveVideos();
+            renderVideos();
+        }
+
+        function editVideo(id) {
+            const video = videos.find(video => video.id === id);
+            if (!video) return;
+
+            const title = prompt("Video title:", video.title);
+            if (title === null) return;
+
+            const subject = prompt("Subject:", video.subject);
+            if (subject === null) return;
+
+            const url = prompt("YouTube URL:", video.url);
+            if (url === null) return;
+
+            const videoId = getYouTubeId(url);
+
+            if (!videoId) {
+                alert("Invalid YouTube URL.");
+                return;
+            }
+
+            video.title = title.trim() || video.title;
+            video.subject = subject.trim();
+            video.url = url.trim();
+            video.videoId = videoId;
+
+            saveVideos();
+            renderVideos();
+        }
+
+        function removeVideo(id) {
+            if (!confirm("Remove this video?")) return;
+
+            videos = videos.filter(video => video.id !== id);
+            saveVideos();
+            renderVideos();
+        }
+
+        function renderVideos() {
+            const list = document.getElementById("videoList");
+            const filter = document.getElementById("videoFilter").value;
+
+            let visible = videos;
+
+            if (filter !== "all") {
+                visible = videos.filter(video => video.status === filter);
+            }
+
+            if (visible.length === 0) {
+                list.innerHTML = "<p>No videos here.</p>";
+                return;
+            }
+
+            list.innerHTML = visible.map(video => `
+                <article>
+                    <hr>
+                    <h3>${escapeHTML(video.title)}</h3>
+
+                    <p>
+                        Subject: ${escapeHTML(video.subject || "General")}
+                        <br>
+                        Status: <strong>${escapeHTML(video.status)}</strong>
+                    </p>
+
+                    <a
+                        href="${escapeAttribute(video.url)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Watch on YouTube
+                    </a>
+
+                    <br><br>
+
+                    <button onclick="changeStatus(${video.id})">Change Status</button>
+                    <button onclick="editVideo(${video.id})">Edit</button>
+                    <button onclick="removeVideo(${video.id})">Remove</button>
+                </article>
+            `).join("");
+        }
+
+        function escapeHTML(text) {
+            return String(text).replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            }[char]));
+        }
+
+        function escapeAttribute(text) {
+            return escapeHTML(text);
+        }
+
+        document.getElementById("videoForm").addEventListener("submit", addVideo);
+
+        renderVideos();
+    </script>
+</body>
+</html>
